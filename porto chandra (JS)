@@ -1,0 +1,74 @@
+const menuToggle = document.getElementById("menuToggle");
+const navMenu = document.getElementById("navMenu");
+const scrollTopBtn = document.getElementById("scrollTopBtn");
+const contactForm = document.getElementById("contactForm");
+
+menuToggle.addEventListener("click", () => {
+  navMenu.classList.toggle("active");
+});
+
+document.querySelectorAll(".nav-menu a").forEach((link) => {
+  link.addEventListener("click", () => {
+    navMenu.classList.remove("active");
+  });
+});
+
+window.addEventListener("scroll", () => {
+  if (window.scrollY > 400) {
+    scrollTopBtn.style.display = "grid";
+  } else {
+    scrollTopBtn.style.display = "none";
+  }
+});
+
+scrollTopBtn.addEventListener("click", () => {
+  window.scrollTo({ top: 0, behavior: "smooth" });
+});
+
+contactForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+
+  const button = contactForm.querySelector("button");
+  const originalText = button.textContent;
+
+  button.textContent = "Pesan Terkirim!";
+  button.disabled = true;
+
+  setTimeout(() => {
+    button.textContent = originalText;
+    button.disabled = false;
+    contactForm.reset();
+  }, 2000);
+});
+
+const counters = document.querySelectorAll("[data-target]");
+
+const counterAnimation = (element) => {
+  const target = Number(element.dataset.target);
+  let count = 0;
+  const speed = 25;
+
+  const interval = setInterval(() => {
+    count += 1;
+    element.textContent = count;
+
+    if (count >= target) {
+      clearInterval(interval);
+      element.textContent = target;
+    }
+  }, speed);
+};
+
+const observer = new IntersectionObserver(
+  (entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        counterAnimation(entry.target);
+        observer.unobserve(entry.target);
+      }
+    });
+  },
+  { threshold: 0.6 }
+);
+
+counters.forEach((counter) => observer.observe(counter));
